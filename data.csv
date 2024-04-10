@@ -1,2 +1,4 @@
 Name,Surname,IBAN,Owner,Currency,Balance
-Alex,Consani,AC<13 numbers and uppercase letters>,<4 digit id with numbers and uppercase,RON,9999
+Alex,Turki,AT1234567890ABC,AT42,RON,0
+Numa,Nokia,NN1234567890ABC,NN00,RON,2
+Alex,Consani,AC1234567890ABC,AC69,RON,9999
