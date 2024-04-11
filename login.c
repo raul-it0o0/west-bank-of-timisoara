@@ -2,7 +2,61 @@
 #include <string.h>
 #include <stdbool.h>
 
-int maxLineSize = 1024;
+const int maxLineSize = 1024;
+const int user_account_limitation = 5;
+
+typedef struct account_struct
+{
+    char iban[15];
+    char currency[3];
+    unsigned long int balance;
+    unsigned int line_in_file;
+
+};
+
+int search_store_credentials(FILE *file_ptr, char *first_name, char *last_name, struct account_struct accounts[]) {
+    
+    char line_reader[maxLineSize] = {};
+    bool account_found = false;
+
+    fgets(line_reader,maxLineSize,file_ptr);
+    // stores header row in line_reader
+    // every call of fgets reads a new row (max 1024 chars or until \n)
+
+    int line_counter = 1, account_counter = 0;
+
+    while ((fgets(line_reader,maxLineSize,file_ptr) != NULL) && (account_counter < user_account_limitation)){
+
+        char *row_entry = strtok(line_reader, ","); // get first column (first_name)
+        // future: modify the name that was read from the csv in order to not be case-sensitive -> strcasecmp?
+
+        if (strcmp(row_entry, first_name) == 0) {
+            printf("LOG: first_name MATCH FOUND ON LINE %d", line_counter);
+
+            row_entry = strtok(NULL, ",");
+            if (strcmp(row_entry, last_name) == 0) {
+                printf("LOG: COMPLETE MATCH FOUND ONE LINE %d", line_counter);
+
+                strcpy(accounts[account_counter].iban, strtok(NULL, ","));
+                strcpy(accounts[account_counter].currency, strtok(NULL, ","));
+                accounts[account_counter].balance = (unsigned long int)strtok(NULL, ",");
+                accounts[account_counter].line_in_file = line_counter;
+
+                account_counter++;
+            }
+        }
+
+        else {
+            printf("NO MATCH FOUND ON LINE %d", line_counter);
+        }
+            
+        
+        line_counter++;
+    }
+
+    return account_counter;
+
+}
 
 char *menu_print_and_parse(char *response){
     
@@ -25,7 +79,7 @@ char *menu_print_and_parse(char *response){
 int main(int argc, char *argv[]){
 
     if (argc != 3) {
-        return printf("\nERROR: NOT ENOUGH ARGUMENTS\nPASS 2 ARGUMENTS AS FOLLOWS:\n./login [name] [surname]\n");
+        return printf("\nERROR: WRONG NUMBER OF ARGUMENTS\nPASS 2 ARGUMENTS AS FOLLOWS:\n./login [name] [surname]\n");
     }
     
     char *userName = argv[1], *userSurname = argv[2];
@@ -34,38 +88,12 @@ int main(int argc, char *argv[]){
     FILE* fPtr = fopen("../data.csv","r");
 
     if (fPtr == NULL) {
-        printf("ERROR: DATA FILE NOT FOUND");
+        printf("ERROR: DATA CSV FILE NOT FOUND");
         return 1;
     }
     
-    char rowStr[maxLineSize] = {};
-    bool account_found = false;
-
-    fgets(rowStr,maxLineSize,fPtr);
-    // stores header row in rowStr
-    // every call of fgets reads a new row (max 1024 chars or until \n)
-
-    unsigned int line_counter = 1;
-    while((fgets(rowStr,maxLineSize,fPtr) != NULL)&&(!account_found)){
-        // get name username
-
-        char *row_entry = strtok(rowStr, ",");
-        // future: modify the name that was read from the csv in order to not be case-sensitive -> strcasecmp?
-        if (strcmp(row_entry,userName) != 0) {
-            printf("NOT IN LINE %d\n", line_counter);
-        }
-        else /* the two strings are equal */{
-            printf("NAME MATCHES IN LINE %d! NOW SEARCHING FOR SURNAME MATCH IN SAME LINE\n", line_counter);
-            row_entry = strtok(NULL, ",");
-
-            if (strcmp(row_entry,userSurname) == 0) {
-                printf("SURNAME MATCHES IN LINE %d!\n", line_counter);
-                account_found = true;
-            }
-        }
-        
-        line_counter++;
-
+    if (search_store_credentials(fPtr, userName, userSurname) > 0) {
+        create_temp_csv(acco)
     }
 
     if (account_found) {
