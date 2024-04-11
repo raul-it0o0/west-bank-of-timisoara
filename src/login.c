@@ -1,41 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include "../src/auth/auth.h"
+#include "../src/user_inputs/user_inputs.h"
+// #include <ncurses>
 
-const int maxLineSize = 1024;
-const int user_account_limitation = 5;
-
-struct account_struct
-{
-    char iban[15];
-    char currency[3];
-    unsigned long int balance;
-    unsigned int line_in_file;
-};
-
-char *menu_print_and_parse(char *response){
-
-    printf("\nChoose an option 1-4.\n");
-    printf("VIEW ACCOUNT INFORMATION [1]\n");
-    printf("EDIT ACCOUNT INFORMATION [2]\n");
-    printf("PERFORM TRANSACTION [3]\n");
-    printf("DELETE ACCOUNT [4]\n");
-    printf("CREATE NEW ACCOUNT [5]\n");
-    printf("\n");
-    fflush(stdout);
-
-    scanf("%c", response);
-    while ((*response < (char)1) || (*response > (char)4)) { // better validation condition
-        printf("\nOption must be a number between 1 and 4. Try again.\n");
-        fflush(stdout);
-        scanf("%c", response);
-    }
-
-    return response;
-}
-
-void create_temp_csv(struct account_struct found_accounts[], int accounts_found) {
+/* void create_temp_csv(struct account_struct found_accounts[], int accounts_found) {
 
     FILE *temp_csv = fopen("temp.csv", "w");
 
@@ -95,10 +66,10 @@ void state_no_accounts_found(char *user_input, FILE *file_ptr, char *first_name,
 
 
     }
-}
+} */
 
 
-int search_store_credentials(FILE *file_ptr, char *first_name, char *last_name, struct account_struct accounts[]) {
+/* int search_store_credentials(FILE *file_ptr, char *first_name, char *last_name, struct account_struct accounts[]) {
     
     char line_reader[maxLineSize] = {};
     bool account_found = false;
@@ -140,76 +111,48 @@ int search_store_credentials(FILE *file_ptr, char *first_name, char *last_name, 
 
     return account_counter;
 
-}
+} */
 
 
 
 int main(int argc, char *argv[]){
 
-    if (argc != 3) {
+    if (argc != 3)
         return printf("\nERROR: WRONG NUMBER OF ARGUMENTS\nPASS 2 ARGUMENTS AS FOLLOWS:\n./login [name] [surname]\n");
-    }
     
-    char *userName = argv[1], *userSurname = argv[2];
-    
-    // login and search for name, surname
-    FILE* fPtr = fopen("../data.csv","r");
+    char *first_name = argv[1], *last_name = argv[2];
 
-    if (fPtr == NULL) {
-        printf("ERROR: DATA CSV FILE NOT FOUND");
-        fflush(stdout);
-        return 1;
+    struct account *singular_account = calloc(1, sizeof(struct account));
+    struct account *user_accounts = calloc(USER_ACCOUNT_LIMITATION, sizeof(struct account));
+    char user_response = auth(first_name, last_name, singular_account, user_accounts);
+
+    if (user_response == '0') {
+        printf("\nLog: FOUND 1 MATCHING ACCOUNT TO USER\n");
+        free(user_accounts);
+        return 0;
+        // auth_success();
     }
 
-    struct account_struct temporary_info_storage[user_account_limitation];
-    int accounts_found = 0;
-    accounts_found = search_store_credentials(fPtr, userName, userSurname, temporary_info_storage);
-    char user_input = 0;
-
-    if (accounts_found > 0) {
-
-    }
-    else {
-        // no accounts found, try again OR create new account
-        printf("\nNo accounts matching %s %s.\nSelect an option.");
-        printf("TRY AGAIN [1]\n");
-        printf("CREATE NEW ACCOUNT [2]\n");
-        printf("EXIT [3]\n");
-
-        scanf("%c", &user_input);
-
-        while ((user_input != 1)||(user_input != 2)||(user_input != 3)) {
-            printf("\nOption must be a number between 1 and 4. Try again.\n");
-            fflush(stdout);
-            scanf("%c", &user_input);
-        }
-
-        if (user_input == 1) {
-            printf("Enter first name: ");
-            scanf("%s", userName);
-            printf("Enter last name: ");
-            scanf("%s", userSurname);
-
-        }
+    else if (user_response == '1') {
+        printf("\nLog: MULTIPLE ACCOUNTS FOUND FOR USER\n");
+        free(singular_account);
+        return 0;
+        // auth_success();
     }
 
-
-        // center in terminal
-        printf("~~~WEST BANK OF TIMISOARA~~~\n");
-        printf("© 2024 West Bank of Timisoara\n"); 
-
-        printf("Welcome %s! What would you like to do today?\n", argv[1]); // add name from csv file
-        // char user_input_response = 0;
-
-        // menu_print();
+    else if (user_response == '2') {
+        printf("\nLog: NO MATCHES FOUND. USER WANTS TO CREATE A NEW ACCOUNT\n");
+        free(user_accounts);
+        free(singular_account);
+        return 0;
     }
 
-    else {
-        printf("Account not found.\n");
-        fflush(stdout);
+    else if (user_response == '3') {
+        printf("\nLog: NO MATCHES FOUND. USER REQUESTED EXIT / FATAL ERROR\n");
+        free(user_accounts);
+        free(singular_account);
+        return 0;
     }
-
-    fclose(fPtr);
 
     return 0;
 }
