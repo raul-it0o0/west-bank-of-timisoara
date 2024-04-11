@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "../src/auth/auth.h"
 
 const int maxLineSize = 1024;
 const int user_account_limitation = 5;
@@ -11,7 +12,6 @@ struct account_struct
     char currency[3];
     unsigned long int balance;
     unsigned int line_in_file;
-
 };
 
 char *menu_print_and_parse(char *response){
