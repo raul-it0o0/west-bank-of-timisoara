@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include "../src/auth/auth.h"
 #include "../src/user_inputs/user_inputs.h"
+#include "../src/auth_success/auth_success.h"
+
 // #include <ncurses>
 
 /* void create_temp_csv(struct account_struct found_accounts[], int accounts_found) {
@@ -124,20 +126,21 @@ int main(int argc, char *argv[]){
 
     struct account *singular_account = calloc(1, sizeof(struct account));
     struct account *user_accounts = calloc(USER_ACCOUNT_LIMITATION, sizeof(struct account));
-    char user_response = auth(first_name, last_name, singular_account, user_accounts);
+    int accounts_found;
+    char user_response = auth(first_name, last_name, singular_account, user_accounts, &accounts_found);
 
     if (user_response == '0') {
         printf("\nLog: FOUND 1 MATCHING ACCOUNT TO USER\n");
         free(user_accounts);
+        auth_success(first_name, last_name, singular_account, &accounts_found);
         return 0;
-        // auth_success();
     }
 
     else if (user_response == '1') {
         printf("\nLog: MULTIPLE ACCOUNTS FOUND FOR USER\n");
         free(singular_account);
+        auth_success(first_name, last_name, user_accounts, &accounts_found);
         return 0;
-        // auth_success();
     }
 
     else if (user_response == '2') {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "user_inputs.h"
 
-void options_menu_and_parse (char *response) {
+void options_menu_and_parse(char *response) {
 
     printf("\nChoose an option 1-4.\n");
     printf("VIEW ACCOUNT INFORMATION [1]\n");
@@ -9,13 +9,13 @@ void options_menu_and_parse (char *response) {
     printf("PERFORM TRANSACTION [3]\n");
     printf("DELETE ACCOUNT [4]\n");
     printf("CREATE NEW ACCOUNT [5]\n");
+    printf("EXIT [6]\n");
     printf("\n");
     fflush(stdout);
 
     scanf("%c", response);
-    while ((*response < (char)1) || (*response > (char)4)) { // better validation condition
+    while ((*response != '1') && (*response != '2') && (*response != '3') && (*response != '4') && (*response != '5') && (response != '6')) { // better validation condition
         printf("\nOption must be a number between 1 and 4. Try again.\n");
-        fflush(stdout);
         scanf("%c", response);
     }
 

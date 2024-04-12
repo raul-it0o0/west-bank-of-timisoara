@@ -4,6 +4,8 @@
 #define USER_ACCOUNT_LIMITATION 5
 #define MAX_CHARS_PER_LINE 1024
 
+#include <stdio.h>
+
 struct account {
     char iban[15];
     char currency[3];
@@ -26,6 +28,7 @@ void store_current_info_in_struct_array(struct account *single_account,
 char auth(char *first_name, 
           char *last_name,
           struct account *singular_account_info,
-          struct account accounts_info[]);
+          struct account accounts_info[],
+          int *accounts_found);
 
 #endif //PROGRAMMING_PROJECT_AUTH_H

@@ -90,7 +90,7 @@ int search_store_credentials(FILE *file_ptr, char *first_name, char *last_name, 
 
 }
 
-char auth(char *first_name, char *last_name, struct account *singular_account_info, struct account accounts_info[]){
+char auth(char *first_name, char *last_name, struct account *singular_account_info, struct account accounts_info[], int *accounts_found){
 
     FILE *file_ptr = fopen("../data/data.csv","r");
 
@@ -99,24 +99,24 @@ char auth(char *first_name, char *last_name, struct account *singular_account_in
         return '3';
     }
 
-    int accounts_found = search_store_credentials(file_ptr, first_name, last_name, singular_account_info, accounts_info);
+    *accounts_found = search_store_credentials(file_ptr, first_name, last_name, singular_account_info, accounts_info);
 
     char user_input = 0;
 
-    if (accounts_found == 0) {
+    if (*accounts_found == 0) {
 
         no_accounts_found_request_input(&user_input);
 
-        while (user_input == 1 && accounts_found == 0) {
+        while (user_input == 1 && *accounts_found == 0) {
 
             printf("Enter first name: ");
             scanf("%s", first_name);
             printf("Enter last name: ");
             scanf("%s", last_name);
 
-            accounts_found = search_store_credentials(file_ptr, first_name, last_name, singular_account_info, accounts_info);
+            *accounts_found = search_store_credentials(file_ptr, first_name, last_name, singular_account_info, accounts_info);
 
-            if (accounts_found == 0) 
+            if (*accounts_found == 0)
                 no_accounts_found_request_input(&user_input);
         }
 
@@ -128,19 +128,19 @@ char auth(char *first_name, char *last_name, struct account *singular_account_in
             return '3';
         }
 
-        if (accounts_found == 1) {
+        if (*accounts_found == 1) {
             return '0';
         }
 
-        if (accounts_found > 1) {
+        if (*accounts_found > 1) {
             return '1';
         }
     }
 
     else {
-        if (accounts_found == 1)
+        if (*accounts_found == 1)
             return '0';
-        else /* if (accounts_found > 1) */ {
+        else /* if (*accounts_found > 1) */ {
             return '1';
         }
     }
