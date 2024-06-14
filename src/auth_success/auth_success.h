@@ -10,6 +10,6 @@ void auth_success(char *first_name,
 
 void view_accounts(char *first_name,
                    struct account *user_accounts,
-                   const int *accounts_found);
+                   int *accounts_found);
 
 #endif //PROGRAMMING_PROJECT_AUTH_SUCCESS_H
