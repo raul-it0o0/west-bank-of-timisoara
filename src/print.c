@@ -1,8 +1,11 @@
-#include <stdio.h>
-#include "user_inputs.h"
+#include "print.h"
+
+void clear_screen() {
+    fflush(stdout);
+    system("CLS");
+}
 
 void options_menu() {
-
     printf("\nChoose an option 1-4.\n");
     printf("VIEW ACCOUNT INFORMATION [1]\n");
     printf("EDIT ACCOUNT INFORMATION [2]\n");
@@ -11,12 +14,18 @@ void options_menu() {
     printf("CREATE NEW ACCOUNT [5]\n");
     printf("EXIT [6]\n");
     printf("\n");
-
 }
 
 void welcome_message(char *first_name){
     printf("\nWEST BANK OF TIMISOARA\n");
     printf("All rights reserved.\n");
     printf("Welcome %s! What would you like to do today?\n", first_name);
+}
 
+void wrong_credentials_prompt() {
+    printf("\nNo accounts found with the provided information.\n");
+    printf("Please enter an option 1-3:\n\n");
+    printf("TRY AGAIN [1]\n");
+    printf("CREATE NEW ACCOUNT [2]\n");
+    printf("EXIT [3]\n\n");
 }

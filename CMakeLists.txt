@@ -7,11 +7,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 
 add_executable(login
         src/login.c
-        src/auth/auth.c
-        src/auth/auth.h
-        src/user_inputs/user_inputs.c
-        src/user_inputs/user_inputs.h
-        src/auth_success/auth_success.c
-        src/auth_success/auth_success.h
-        src/new_account/new_account.c
-        src/new_account/new_account.h)
+        src/helpers.c
+        src/print.c
+        src/account_operations.c
+        src/menus.c
+        include/menus.h)
+
+target_include_directories(login PUBLIC include)

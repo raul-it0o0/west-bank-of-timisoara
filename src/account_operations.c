@@ -1,38 +1,16 @@
-#include "new_account.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#include "account_operations.h"
 
-// Eliminate the need for this function
-char *char_to_str(char c) {
-    char *str = calloc(2, sizeof(char));
-    str[0] = c;
+void view_accounts(char *first_name, struct account *user_accounts, int *accounts_found) {
 
-    return str;
-}
+    printf("\n%s, you have %d account(s) at our bank:\n\n", first_name, *accounts_found);
 
-char *generate_iban(char *first_name, char *last_name){
-    char *iban = calloc(15 + 1, sizeof(char));
-
-    strncat(iban, char_to_str(first_name[0]),1);
-    strncat(iban, char_to_str(last_name[0]),1);
-
-    for (unsigned char i = 0; i < 13; i++) {
-        char digit_str[1];
-
-        char *generated_digit = calloc(2, sizeof(char));
-        sprintf(generated_digit, "%d", (rand()%10));
-        digit_str[0] = *generated_digit;
-        strncat(iban, digit_str, 1);
+    for (int i = 0; i < *accounts_found ; i++) {
+        printf("Account %d\n", i+1);
+        printf("IBAN: %s\n", user_accounts[i].iban);
+        printf("Current Balance: %lu\n", user_accounts[i].balance);
+        printf("Currency: %s\n\n", user_accounts[i].currency);
     }
 
-    return iban;
-}
-
-void capitalize_str(char *str) {
-    if ((str[0] >= 'a') && (str[0] <= 'z'))
-        str[0] -= 32;
 }
 
 void new_account(char *first_name, char *last_name, struct account *user_accounts, int *accounts_found, bool authenticated) {
@@ -54,27 +32,31 @@ void new_account(char *first_name, char *last_name, struct account *user_account
         printf("\nWould you like to keep this data for the new account creation [Y] or input new data [N]? [Y/N]\n");
         scanf(" %c", &response);
 
-        if (response == 'Y') {
-            strcpy(new_first_name, first_name);
-            strcpy(new_last_name, last_name);
-        }
-        else {
+        if (response != 'Y') {
             printf("Enter first name: ");
             scanf(" %s", new_first_name);
 
             printf("Enter last name: ");
             scanf(" %s", new_last_name);
         }
+        else {
+            strcpy(new_first_name, first_name);
+            strcpy(new_last_name, last_name);
+        }
+
+        // Capitalize new entered credentials
+        capitalize_str(new_first_name);
+        capitalize_str(new_last_name);
 
     }
-
-    // Capitalize entered credentials
-    capitalize_str(new_first_name);
-    capitalize_str(new_last_name);
+    else {
+        strcpy(new_first_name, first_name);
+        strcpy(new_last_name, last_name);
+    }
 
     char *iban = generate_iban(new_first_name, new_last_name);
 
-    char *currency = malloc(3 * sizeof(char) + 1);
+    char *currency;
 
     printf("\nChoose your currency for your new account.\nOur bank only supports the following currencies:\n\n");
     printf("RON [1]\n");
@@ -84,28 +66,29 @@ void new_account(char *first_name, char *last_name, struct account *user_account
     printf("BTC [5]\n\n");
     printf("Choose an option 1-5:\n");
 
-    scanf(" %c", &response);
+    int input;
+    scanf("%d", &input);
     bool valid_input = true;
 
     do {
-        switch (response) {
-            case '1':
+        switch (input) {
+            case 1:
                 currency = "RON";
                 valid_input = true;
                 break;
-            case '2':
+            case 2:
                 currency = "EUR";
                 valid_input = true;
                 break;
-            case '3':
+            case 3:
                 currency = "GBP";
                 valid_input = true;
                 break;
-            case '4':
+            case 4:
                 currency = "USD";
                 valid_input = true;
                 break;
-            case '5':
+            case 5:
                 currency = "BTC";
                 valid_input = true;
                 break;
@@ -113,7 +96,7 @@ void new_account(char *first_name, char *last_name, struct account *user_account
             default:
                 valid_input = false;
                 printf("\n Please enter a valid option 1-5.\n");
-                scanf(" %c", &response);
+                scanf("%d", &input);
                 break;
         }
 

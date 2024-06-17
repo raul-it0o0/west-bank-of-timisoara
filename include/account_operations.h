@@ -1,20 +1,22 @@
 #ifndef PROGRAMMING_PROJECT_NEW_ACCOUNT_H
 #define PROGRAMMING_PROJECT_NEW_ACCOUNT_H
 #define MAX_CHARS_FOR_NAME 50
-#include "../auth/auth.h"
+#include "helpers.h"
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-char *char_to_str(char c);
-
+void view_accounts(char *first_name,
+                   BankAccount *user_accounts,
+                   int *accounts_found);
+void edit_account();
+void transaction();
+void delete_account();
 void new_account(char *first_name,
                  char *last_name,
                  struct account *user_accounts,
                  int *accounts_found,
                  bool authenticated);
-
-void capitalize_str(char *str);
-
-char *generate_iban(char *first_name,
-                    char *last_name);
 
 #endif //PROGRAMMING_PROJECT_NEW_ACCOUNT_H

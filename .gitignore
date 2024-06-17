@@ -6,3 +6,4 @@ vs-code-build/*
 /cmake-build-debug/
 /build/
 /old-src/
+/bin/
