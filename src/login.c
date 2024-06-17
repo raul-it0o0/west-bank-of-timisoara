@@ -10,42 +10,43 @@
 
 int main(int argc, char *argv[]){
 
+    // Seed random number generator used for IBAN generation
     time_t t;
     srand((unsigned long long) (&t));
 
-    if (argc != 3)
-        return printf("\nERROR: WRONG NUMBER OF ARGUMENTS\nPASS 2 ARGUMENTS AS FOLLOWS:\n./login [name] [surname]\n");
-    
+    // Validate received command line arguments
+    if (argc != 3) {
+        printf("\nERROR: WRONG NUMBER OF ARGUMENTS\nPASS 2 ARGUMENTS AS FOLLOWS:\n./login [name] "
+                      "[surname]\n\nPress any key to continue.");
+        return getchar();
+    }
+
     char *first_name = argv[1], *last_name = argv[2];
 
-    struct account *user_accounts = calloc(USER_ACCOUNT_LIMITATION, sizeof(struct account));
+    BankAccount *user_accounts = calloc(USER_ACCOUNT_LIMITATION, sizeof(BankAccount));
+    // Goal: remove user account limitation using C dynamic arrays (vectors)
+
     int accounts_found = 0;
-    char user_response = auth(first_name, last_name, user_accounts, &accounts_found);
 
-    if (user_response == '0') {
-//        printf("\nLog: FOUND 1 MATCHING ACCOUNT TO USER\n");
-        auth_success(first_name, last_name, user_accounts, &accounts_found);
-        return 0;
-    }
+    switch(auth(first_name, last_name, user_accounts, &accounts_found)) {
+        case 0:
+            // Found 1 credential match
+            auth_success(first_name, last_name, user_accounts, &accounts_found);
 
-    else if (user_response == '1') {
-//        printf("\nLog: MULTIPLE ACCOUNTS FOUND FOR USER\n");
-        auth_success(first_name, last_name, user_accounts, &accounts_found);
-        return 0;
-    }
+        case 1:
+            // Found multiple credential matches
+            auth_success(first_name, last_name, user_accounts, &accounts_found);
 
-    else if (user_response == '2') {
-//        printf("\nLog: NO MATCHES FOUND. USER WANTS TO CREATE A NEW ACCOUNT\n");
-        new_account(first_name, last_name, user_accounts, &accounts_found, false);
-        auth_success(first_name, last_name, user_accounts, &accounts_found);
-        return 0;
-    }
+        case 2:
+            // No matches found, user wants to create a new account
+            new_account(first_name, last_name, user_accounts, &accounts_found, false);
+            auth_success(first_name, last_name, user_accounts, &accounts_found);
 
-    else if (user_response == '3') {
-//        printf("\nLog: NO MATCHES FOUND. USER REQUESTED EXIT / FATAL ERROR\n");
-        free(user_accounts);
-        return 0;
-    }
+        default:
+            // No matches found, user requested exit / Error
+            free(user_accounts);
+        }
 
     return 0;
+
 }

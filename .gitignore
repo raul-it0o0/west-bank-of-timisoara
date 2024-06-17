@@ -1,0 +1,8 @@
+pp_workspace.code-workspace
+.vscode/*
+.idea/*
+cmake-build-debug/*
+vs-code-build/*
+/cmake-build-debug/
+/build/
+/old-src/

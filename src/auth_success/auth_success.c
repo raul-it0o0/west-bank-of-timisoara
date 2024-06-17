@@ -1,6 +1,7 @@
 #include "auth_success.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "../new_account/new_account.h"
 #include "../auth/auth.h"
 
@@ -18,48 +19,60 @@ void view_accounts(char *first_name, struct account *user_accounts, int *account
 
 void auth_success(char *first_name, char *last_name, struct account *user_accounts, int *accounts_found) {
 
-    welcome_message(first_name);
-    options_menu();
+    do {
 
-    unsigned short int response;
-    scanf("%hu", &response);
-
-    while ((response != 1) && (response != 2) && (response != 3) && (response != 4) && (response != 5) && (response != 6)) { // better validation condition
-        printf("\nOption must be a number between 1 and 6. Try again.\n");
-        scanf(" %hu", &response);
-    }
-
-    while (response != 6) {
-        if (response == 1) {
-            view_accounts(first_name, user_accounts, accounts_found);
-        }
-
-        if (response == 2) {
-            printf("\nFeature not available yet.\n");
-        }
-
-        if (response == 3) {
-            printf("\nFeature not available yet.\n");
-        }
-
-        if (response == 4) {
-            printf("\nFeature not available yet.\n");
-        }
-
-        if (response == 5) {
-            new_account(first_name, last_name, user_accounts, accounts_found, true);
-        }
-
+        welcome_message(first_name);
         options_menu();
+
+        bool valid_input = true;
+        // Goal: receive string input, clear buffer
+        unsigned short int response;
         scanf("%hu", &response);
 
-        while ((response != 1) && (response != 2) && (response != 3) && (response != 4) && (response != 5) && (response != 6)) { // better validation condition
-            printf("\nOption must be a number between 1 and 6. Try again.\n");
-            scanf(" %hu", &response);
-        }
-    }
+        do {
+            switch(response) {
+                case 1:
+                    // 'VIEW ACCOUNT INFORMATION'
+                    view_accounts(first_name, user_accounts, accounts_found);
+                    // Goal: Add options from this menu: edit account information, perform transcation, delete account, create new account and exit
+                    // May be cleaner: Press any key to continue and return to the auth_success menu.
+                    break;
 
-    // exit while loop means user_input = 6
-    // return, exit auth_success
+                case 2:
+                    // 'EDIT ACCOUNT INFORMATION'
+                    printf("\nFeature not available yet.\n");
+                    break;
+                
+                case 3:
+                    // 'PERFORM TRANSACTION'
+                    printf("\nFeature not available yet.\n");
+                    break;
+
+                case 4:
+                    // 'DELETE ACCOUNT'
+                    printf("\nFeature not available yet.\n");
+                    break;
+
+                case 5:
+                    // 'CREATE NEW ACCOUNT'
+                    new_account(first_name, last_name, user_accounts, accounts_found, true);
+                    break;
+
+                case 6:
+                    // 'EXIT'
+                    return;
+
+                default:
+                    // Wrong input
+                    valid_input = false;
+                    printf("\nOption must be a number between 1 and 6. Try again.\n");
+                    scanf("%hu", &response);
+                    break;
+            }
+
+        } while(!valid_input);
+
+    // Reprint menu until 'EXIT' is chosen
+    } while(true);
 
 }

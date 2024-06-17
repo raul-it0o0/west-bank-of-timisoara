@@ -3,9 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define RAND_MAX 9
 
-
+// Eliminate the need for this function
 char *char_to_str(char c) {
     char *str = calloc(2, sizeof(char));
     str[0] = c;
@@ -44,37 +43,32 @@ void new_account(char *first_name, char *last_name, struct account *user_account
     }
 
     unsigned char response = 0;
+    char *new_first_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
+    char *new_last_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
 
     if(!authenticated) {
         printf("\nYou last entered the following credentials:\n");
         printf("First Name: %s\n", first_name);
         printf("Last Name: %s\n", last_name);
 
-        printf("\nWould you like to keep this data for the new account creation [Y] or input new data [N]?\n[Y\\N]\n");
+        printf("\nWould you like to keep this data for the new account creation [Y] or input new data [N]? [Y/N]\n");
         scanf(" %c", &response);
 
-        while((response != 'Y')&&(response != 'N')){
-            printf("\nPlease enter a valid option.\n");
-            printf("Yes [Y]\nNo [N]\n\n");
-            scanf(" %c", &response);
+        if (response == 'Y') {
+            strcpy(new_first_name, first_name);
+            strcpy(new_last_name, last_name);
         }
+        else {
+            printf("Enter first name: ");
+            scanf(" %s", new_first_name);
+
+            printf("Enter last name: ");
+            scanf(" %s", new_last_name);
+        }
+
     }
 
-    char *new_first_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
-    char *new_last_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
-
-    if (response == 'N') {
-        printf("Enter first name: ");
-        scanf(" %s", new_first_name);
-        printf("Enter last name: ");
-        scanf(" %s", new_last_name);
-    }
-
-    else {
-        strcpy(new_first_name, first_name);
-        strcpy(new_last_name, last_name);
-    }
-
+    // Capitalize entered credentials
     capitalize_str(new_first_name);
     capitalize_str(new_last_name);
 
@@ -91,38 +85,48 @@ void new_account(char *first_name, char *last_name, struct account *user_account
     printf("Choose an option 1-5:\n");
 
     scanf(" %c", &response);
+    bool valid_input = true;
 
-    while ((response != '1') && (response != '2') && (response != '3') && (response != '4') && (response != '5')) {
-        printf("\n Please enter a valid option 1-5.\n");
-        scanf(" %c", &response);
-    }
+    do {
+        switch (response) {
+            case '1':
+                currency = "RON";
+                valid_input = true;
+                break;
+            case '2':
+                currency = "EUR";
+                valid_input = true;
+                break;
+            case '3':
+                currency = "GBP";
+                valid_input = true;
+                break;
+            case '4':
+                currency = "USD";
+                valid_input = true;
+                break;
+            case '5':
+                currency = "BTC";
+                valid_input = true;
+                break;
 
-    switch (response) {
-        case '1':
-            currency = "RON";
-            break;
-        case '2':
-            currency = "EUR";
-            break;
-        case '3':
-            currency = "GBP";
-            break;
-        case '4':
-            currency = "USD";
-            break;
-        case '5':
-            currency = "BTC";
-            break;
-        default:
-            break;
-    }
+            default:
+                valid_input = false;
+                printf("\n Please enter a valid option 1-5.\n");
+                scanf(" %c", &response);
+                break;
+        }
 
+    } while(!valid_input);
+
+    // Append new account information to the data.csv file
     FILE *file_ptr = fopen("../data/data.csv", "a");
 
     fprintf(file_ptr, "\n%s,%s,%s,%s,%d", new_first_name, new_last_name, iban, currency, 0);
 
     fclose(file_ptr);
 
+    // Add the new account information to user_accounts array
     strcpy(user_accounts[*accounts_found].iban, iban);
     strcpy(user_accounts[*accounts_found].currency, currency);
     user_accounts[*accounts_found].balance = 0;
@@ -131,10 +135,7 @@ void new_account(char *first_name, char *last_name, struct account *user_account
     free(new_first_name);
     free(new_last_name);
     free(iban);
-//    free(currency);
 
     printf("\nYour new account has been created!\nYour balance is currently 0, so perform a transaction or edit account to add funds\n");
-
-    // return
 
 }

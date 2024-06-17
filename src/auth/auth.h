@@ -5,11 +5,11 @@
 #define MAX_CHARS_PER_LINE 1024
 #include <stdio.h>
 
-struct account {
+typedef struct account {
     char iban[16];
     char currency[3];
     unsigned long int balance;
-};
+}BankAccount;
 
 int search_store_credentials(FILE *file_ptr,
                              char *first_name,
@@ -18,9 +18,9 @@ int search_store_credentials(FILE *file_ptr,
 
 void no_accounts_found_request_input(char *user_input);
 
-char auth(char *first_name, 
-          char *last_name,
-          struct account accounts_info[],
-          int *accounts_found);
+int auth(char *first_name,
+         char *last_name,
+         BankAccount accounts_info[],
+         int *accounts_found);
 
 #endif //PROGRAMMING_PROJECT_AUTH_H
