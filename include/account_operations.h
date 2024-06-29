@@ -2,6 +2,7 @@
 #define PROGRAMMING_PROJECT_NEW_ACCOUNT_H
 #define MAX_CHARS_FOR_NAME 50
 #include "helpers.h"
+#include "print.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,7 +10,7 @@
 
 void view_accounts(char *first_name,
                    BankAccount *user_accounts,
-                   int *accounts_found);
+                   const int *accounts_found);
 void edit_account();
 void transaction();
 void delete_account();

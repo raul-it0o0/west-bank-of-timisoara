@@ -5,7 +5,7 @@
 #include "helpers.h"
 #include "print.h"
 
-void no_accounts_found_request_input(char *user_input);
+void no_match_found_prompt(char *user_input);
 
 int auth(char *first_name,
          char *last_name,

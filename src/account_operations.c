@@ -1,6 +1,8 @@
 #include "account_operations.h"
 
-void view_accounts(char *first_name, struct account *user_accounts, int *accounts_found) {
+void view_accounts(char *first_name, struct account *user_accounts, const int *accounts_found) {
+
+    clear_screen();
 
     printf("\n%s, you have %d account(s) at our bank:\n\n", first_name, *accounts_found);
 
@@ -11,12 +13,23 @@ void view_accounts(char *first_name, struct account *user_accounts, int *account
         printf("Currency: %s\n\n", user_accounts[i].currency);
     }
 
+    // Platform dependent (only on Windows)
+    system("pause");
+    // TODO: Use sleep() function for UNIX
+
 }
 
 void new_account(char *first_name, char *last_name, struct account *user_accounts, int *accounts_found, bool authenticated) {
 
+    clear_screen();
+
     if (*accounts_found == USER_ACCOUNT_LIMITATION) {
-        printf("%s, you have %d accounts at our bank.\nYou cannot create any more accounts at our bank.\n", first_name, *accounts_found);
+        printf("%s, you have %d accounts at our bank.\nYou cannot create any more accounts at our bank.\n\n",
+               first_name, *accounts_found);
+
+        // Platform dependent (only on Windows)
+        system("pause");
+        // TODO: Use sleep() function for UNIX
         return;
     }
 
@@ -38,6 +51,11 @@ void new_account(char *first_name, char *last_name, struct account *user_account
 
             printf("Enter last name: ");
             scanf(" %s", new_last_name);
+
+            // Update first_name and last_name values
+            strcpy(first_name, new_first_name);
+            strcpy(last_name, new_last_name);
+
         }
         else {
             strcpy(new_first_name, first_name);
@@ -119,6 +137,11 @@ void new_account(char *first_name, char *last_name, struct account *user_account
     free(new_last_name);
     free(iban);
 
-    printf("\nYour new account has been created!\nYour balance is currently 0, so perform a transaction or edit account to add funds\n");
+    clear_screen();
+    printf("\nYour new account has been created!\nYour balance is currently 0, so perform a transaction or "
+           "edit account to add funds\n\n");
 
+    // Platform dependent (only on Windows)
+    system("pause");
+    // TODO: Use sleep() function for UNIX
 }

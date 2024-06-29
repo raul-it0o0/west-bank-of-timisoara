@@ -5,21 +5,18 @@ void clear_screen() {
     system("CLS");
 }
 
-void options_menu() {
-    printf("\nChoose an option 1-4.\n");
+void options_menu(char *first_name) {
+    printf("\nWEST BANK OF TIMISOARA\n");
+    printf("All rights reserved.\n");
+    printf("Welcome %s! What would you like to do today?\n\n", first_name);
+
+    printf("Choose an option 1-6.\n");
     printf("VIEW ACCOUNT INFORMATION [1]\n");
     printf("EDIT ACCOUNT INFORMATION [2]\n");
     printf("PERFORM TRANSACTION [3]\n");
     printf("DELETE ACCOUNT [4]\n");
     printf("CREATE NEW ACCOUNT [5]\n");
-    printf("EXIT [6]\n");
-    printf("\n");
-}
-
-void welcome_message(char *first_name){
-    printf("\nWEST BANK OF TIMISOARA\n");
-    printf("All rights reserved.\n");
-    printf("Welcome %s! What would you like to do today?\n", first_name);
+    printf("EXIT [6]\n\n");
 }
 
 void wrong_credentials_prompt() {
