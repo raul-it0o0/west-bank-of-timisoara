@@ -10,7 +10,6 @@ add_executable(login
         src/helpers.c
         src/print.c
         src/account_operations.c
-        src/menus.c
-        include/menus.h)
+        src/menus.c)
 
-target_include_directories(login PUBLIC include)
+target_include_directories(login PUBLIC include lib/sds)

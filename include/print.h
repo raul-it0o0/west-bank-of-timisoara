@@ -4,7 +4,9 @@
 #include <stdlib.h>
 
 void clear_screen();
-void options_menu(char *first_name);
+void options_menu();
 void wrong_credentials_prompt();
+
+void pause();
 
 #endif //PROGRAMMING_PROJECT_USER_INPUTS_H

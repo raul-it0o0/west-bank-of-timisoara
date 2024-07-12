@@ -1,147 +1,110 @@
 #include "account_operations.h"
 
-void view_accounts(char *first_name, struct account *user_accounts, const int *accounts_found) {
+void view_accounts(const User* session_user) {
 
     clear_screen();
 
-    printf("\n%s, you have %d account(s) at our bank:\n\n", first_name, *accounts_found);
+    int account_count = arrlen(session_user->owned_bank_accounts);
 
-    for (int i = 0; i < *accounts_found ; i++) {
-        printf("Account %d\n", i+1);
-        printf("IBAN: %s\n", user_accounts[i].iban);
-        printf("Current Balance: %lu\n", user_accounts[i].balance);
-        printf("Currency: %s\n\n", user_accounts[i].currency);
-    }
-
-    // Platform dependent (only on Windows)
-    system("pause");
-    // TODO: Use sleep() function for UNIX
-
-}
-
-void new_account(char *first_name, char *last_name, struct account *user_accounts, int *accounts_found, bool authenticated) {
-
-    clear_screen();
-
-    if (*accounts_found == USER_ACCOUNT_LIMITATION) {
-        printf("%s, you have %d accounts at our bank.\nYou cannot create any more accounts at our bank.\n\n",
-               first_name, *accounts_found);
-
-        // Platform dependent (only on Windows)
-        system("pause");
-        // TODO: Use sleep() function for UNIX
+    if (account_count == 0) {
+        printf("%s, you have no accounts to view.\n\n", session_user->first_name);
+        pause();
         return;
     }
 
+    printf("%s, you have %d account(s) at our bank:\n", session_user->first_name, account_count);
+
+    for (int i = 0; i < account_count; i++) {
+        printf("=======================================================\n");
+        printf("Account #%d ( %s )\n\n", i+1, session_user->owned_bank_accounts[i]->iban);
+        printf("%0.2Lf %s\n\n",
+               session_user->owned_bank_accounts[i]->balance,
+               session_user->owned_bank_accounts[i]->currency);
+        printf("=======================================================\n");
+    }
+
+    pause();
+
+}
+
+void new_account(User *session_user, bool authenticated) {
+
+    clear_screen();
+
     unsigned char response = 0;
-    char *new_first_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
-    char *new_last_name = calloc(MAX_CHARS_FOR_NAME, sizeof(char));
 
     if(!authenticated) {
         printf("\nYou last entered the following credentials:\n");
-        printf("First Name: %s\n", first_name);
-        printf("Last Name: %s\n", last_name);
+        printf("First Name: %s\n", session_user->first_name);
+        printf("Last Name: %s\n", session_user->last_name);
 
-        printf("\nWould you like to keep this data for the new account creation [Y] or input new data [N]? [Y/N]\n");
+        printf("\nWould you like to:\nInput new credentials [Y]; or"
+               "\nKeep this data for the new account [n]\n\n");
         scanf(" %c", &response);
 
-        if (response != 'Y') {
-            printf("Enter first name: ");
-            scanf(" %s", new_first_name);
+        if (response == 'Y') {
 
-            printf("Enter last name: ");
-            scanf(" %s", new_last_name);
+            memset(session_user->first_name, '\0', MAX_CHARS_FOR_NAME);
+            memset(session_user->last_name, '\0', MAX_CHARS_FOR_NAME);
 
-            // Update first_name and last_name values
-            strcpy(first_name, new_first_name);
-            strcpy(last_name, new_last_name);
+            printf("\nEnter new first name: ");
+            scanf(" %s", session_user->first_name);
+
+            printf("Enter new last name: ");
+            scanf(" %s", session_user->last_name);
 
         }
-        else {
-            strcpy(new_first_name, first_name);
-            strcpy(new_last_name, last_name);
-        }
-
-        // Capitalize new entered credentials
-        capitalize_str(new_first_name);
-        capitalize_str(new_last_name);
-
-    }
-    else {
-        strcpy(new_first_name, first_name);
-        strcpy(new_last_name, last_name);
     }
 
-    char *iban = generate_iban(new_first_name, new_last_name);
+    // Make sure the credentials
+    // are written in capitals in the DB
+    capitalize_str(session_user->first_name);
+    capitalize_str(session_user->last_name);
 
-    char *currency;
+    clear_screen();
 
-    printf("\nChoose your currency for your new account.\nOur bank only supports the following currencies:\n\n");
-    printf("RON [1]\n");
-    printf("EUR [2]\n");
-    printf("GBP [3]\n");
-    printf("USD [4]\n");
-    printf("BTC [5]\n\n");
-    printf("Choose an option 1-5:\n");
+    printf("Choose your currency for your new account.\nOur bank only supports the following currencies:\n\n");
+    printf("[1] RON (Romanian Leu)\n");
+    printf("[2] EUR (Euro)\n");
+    printf("[3] GBP (British Pound)\n");
+    printf("[4] USD (US Dollar)\n");
+    printf("[5] BTC (Bitcoin)\n\n");
+    printf("Choose an option 1-5:\n\n");
 
     int input;
     scanf("%d", &input);
-    bool valid_input = true;
 
-    do {
-        switch (input) {
-            case 1:
-                currency = "RON";
-                valid_input = true;
-                break;
-            case 2:
-                currency = "EUR";
-                valid_input = true;
-                break;
-            case 3:
-                currency = "GBP";
-                valid_input = true;
-                break;
-            case 4:
-                currency = "USD";
-                valid_input = true;
-                break;
-            case 5:
-                currency = "BTC";
-                valid_input = true;
-                break;
+    while ((input != 1) && (input != 2) && (input != 3) && (input != 4) && (input != 5)) {
+        printf("\n\n Please enter a valid option 1-5.\n\n");
+        scanf("%d", &input);
+    }
 
-            default:
-                valid_input = false;
-                printf("\n Please enter a valid option 1-5.\n");
-                scanf("%d", &input);
-                break;
-        }
-
-    } while(!valid_input);
+    BankAccount* new_account = bank_account_init(input, session_user->first_name, session_user->last_name);
+    if (new_account == NULL) {
+        printf("Allocation failed\n");
+        pause();
+        return;
+    }
 
     // Append new account information to the data.csv file
     FILE *file_ptr = fopen("../data/data.csv", "a");
 
-    fprintf(file_ptr, "\n%s,%s,%s,%s,%d", new_first_name, new_last_name, iban, currency, 0);
+    fprintf(file_ptr, "\n%s,%s,%s,%s,%0.2Lf",
+            session_user->first_name,
+            session_user->last_name,
+            new_account->iban,
+            new_account->currency,
+            new_account->balance);
 
     fclose(file_ptr);
 
-    // Add the new account information to user_accounts array
-    strcpy(user_accounts[*accounts_found].iban, iban);
-    strcpy(user_accounts[*accounts_found].currency, currency);
-    user_accounts[*accounts_found].balance = 0;
-    (*accounts_found)++;
-
-    free(new_first_name);
-    free(new_last_name);
-    free(iban);
+    // Append the new account in the user's owned accounts array
+    arrput(session_user->owned_bank_accounts, new_account);
 
     clear_screen();
-    printf("\nYour new account has been created!\nYour balance is currently 0, so perform a transaction or "
+    printf("Congrats! Your new account has been created!\nYour balance is currently 0, so perform a "
+           "transaction or "
            "edit account to add funds\n\n");
 
-    // Platform dependent (only on Windows)
-    system("pause");
-    // TODO: Use sleep() function for UNIX
+    pause();
 }
