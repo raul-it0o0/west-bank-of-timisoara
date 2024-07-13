@@ -2,6 +2,11 @@
 
 The West Bank of Timisoara is a bank management system with which one can create a bank account, and view balances.
 
+> **Note**: A "cleaner" release (but still with the same limited features) is available on the `release` branch. **This `main` branch only features changes made up until 12.07.2024, 23:59**, to respect the deadline. 
+> 
+> **! Any changes made past this date are additions and modifications of README files. This can be seen in the commits section.**
+
+
 ### Current features
 - Creating an account, in a specific currency, out of 5 currently supported currencies
 - Viewing the accounts current balance.
