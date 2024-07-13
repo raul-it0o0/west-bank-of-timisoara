@@ -9,9 +9,6 @@
 #include <string.h>
 
 void view_accounts(const User *session_user);
-void edit_account();
-void transaction();
-void delete_account();
 void new_account(User *session_user, bool authenticated);
 
 #endif //PROGRAMMING_PROJECT_NEW_ACCOUNT_H

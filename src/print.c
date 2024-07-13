@@ -8,13 +8,10 @@ void clear_screen() {
 void options_menu() {
     printf("Welcome! What would you like to do today?\n\n");
 
-    printf("Choose an option 1-6.\n");
+    printf("Choose an option 1-3.\n");
     printf("[1] VIEW ACCOUNT INFORMATION\n");
-    printf("[2] EDIT ACCOUNT INFORMATION\n");
-    printf("[3] PERFORM TRANSACTION\n");
-    printf("[4] DELETE ACCOUNT\n");
-    printf("[5] CREATE NEW ACCOUNT\n");
-    printf("[6] EXIT\n\n");
+    printf("[2] CREATE NEW ACCOUNT\n");
+    printf("[3] EXIT\n\n");
 }
 
 void wrong_credentials_prompt() {

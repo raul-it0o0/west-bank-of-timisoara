@@ -2,12 +2,6 @@
 #include <stdlib.h>
 #include "menus.h"
 
-// TODO: Stop caring about input validation, leave it for last !
-// TODO: Modify user account data feature (file editing)
-// TODO: Transactions: check destination account existence and currency
-// TODO: Currency conversion: Either statically or through a Python API program which gets called each time
-//  and writes conversion rates in a file which gets parsed
-
 int main(int argc, char *argv[]){
 
     // Seed random number generator used for IBAN generation

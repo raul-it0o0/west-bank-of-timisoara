@@ -17,7 +17,7 @@ void view_accounts(const User* session_user) {
     for (int i = 0; i < account_count; i++) {
         printf("=======================================================\n");
         printf("Account #%d ( %s )\n\n", i+1, session_user->owned_bank_accounts[i]->iban);
-        printf("%0.2Lf %s\n\n",
+        printf("%0.2Lf %s\n",
                session_user->owned_bank_accounts[i]->balance,
                session_user->owned_bank_accounts[i]->currency);
         printf("=======================================================\n");
@@ -34,7 +34,7 @@ void new_account(User *session_user, bool authenticated) {
     unsigned char response = 0;
 
     if(!authenticated) {
-        printf("\nYou last entered the following credentials:\n");
+        printf("You last entered the following credentials:\n");
         printf("First Name: %s\n", session_user->first_name);
         printf("Last Name: %s\n", session_user->last_name);
 
@@ -43,6 +43,8 @@ void new_account(User *session_user, bool authenticated) {
         scanf(" %c", &response);
 
         if (response == 'Y') {
+
+            clear_screen();
 
             memset(session_user->first_name, '\0', MAX_CHARS_FOR_NAME);
             memset(session_user->last_name, '\0', MAX_CHARS_FOR_NAME);

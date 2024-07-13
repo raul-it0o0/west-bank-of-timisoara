@@ -88,32 +88,11 @@ void auth_success(User* session_user) {
 
                 case 2:
                     valid_input = true;
-                    // 'EDIT ACCOUNT INFORMATION'
-                    printf("\nFeature not available yet.\n\n");
-                    pause();
-                    break;
-
-                case 3:
-                    valid_input = true;
-                    // 'PERFORM TRANSACTION'
-                    printf("\nFeature not available yet.\n\n");
-                    pause();
-                    break;
-
-                case 4:
-                    valid_input = true;
-                    // 'DELETE ACCOUNT'
-                    printf("\nFeature not available yet.\n\n");
-                    pause();
-                    break;
-
-                case 5:
-                    valid_input = true;
                     // 'CREATE NEW ACCOUNT'
                     new_account(session_user, true);
                     break;
 
-                case 6:
+                case 3:
                     // 'EXIT'
                     return;
 

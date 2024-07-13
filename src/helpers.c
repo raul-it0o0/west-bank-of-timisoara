@@ -150,14 +150,8 @@ void user_destroy(User* this) {
         this->owned_bank_accounts = NULL;
     }
 
-    // TODO: Remove
-    printf("Freed array\n");
-
     free(this);
     this = NULL;
-
-    // TODO: Remove
-    printf("Freed user\n");
 
 }
 
