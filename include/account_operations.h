@@ -9,7 +9,9 @@
 #include <string.h>
 
 void view_accounts(const User *session_user);
-void edit_account();
+void edit_data(User *session_user);
+void edit_account(User *session_user);
+void edit_credentials();
 void transaction();
 void delete_account();
 void new_account(User *session_user, bool authenticated);

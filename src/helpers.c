@@ -161,6 +161,72 @@ void user_destroy(User* this) {
 
 }
 
+int get_currency_code(const char* currency) {
+    if (strcmp(currency, "RON") == 0)
+        return 1;
+    else if (strcmp(currency, "EUR") == 0)
+        return 2;
+    else if (strcmp(currency, "GBP") == 0)
+        return 3;
+    else if (strcmp(currency, "USD") == 0)
+        return 4;
+    else if (strcmp(currency, "BTC") == 0)
+        return 5;
+}
+
+void get_currency_from_code(const int currency_code, char* currency) {
+    switch(currency_code) {
+        case 1:
+            strcpy(currency, "RON");
+            return;
+        case 2:
+            strcpy(currency, "EUR");
+            return;
+        case 3:
+            strcpy(currency, "GBP");
+            return;
+        case 4:
+            strcpy(currency, "USD");
+            return;
+        case 5:
+            strcpy(currency, "BTC");
+            return;
+    }
+}
+
+long double currency_conversion(const int initial_currency_code, const int final_currency_code, const long
+double
+initial_amount) {
+    char initial_currency[3], final_currency[3];
+    get_currency_from_code(initial_currency_code, initial_currency);
+    get_currency_from_code(final_currency_code, final_currency);
+
+    FILE* file_ptr = fopen("../data/exchange_rates.csv", "r");
+
+    if (file_ptr == NULL) {
+        printf("Error opening CSV file. Re-run and try again.\n");
+        pause();
+        return 0;
+    }
+
+    char* row_reader = calloc(MAX_CHARS_PER_LINE, sizeof(char));
+
+    fgets(row_reader, MAX_CHARS_PER_LINE, file_ptr);
+    // Stores (and ignores, i.e. does not process) header row in row_reader
+
+    while (fgets(row_reader,MAX_CHARS_PER_LINE,file_ptr) != NULL) {
+        if ((strcmp(initial_currency, strtok(row_reader, ",")) == 0) && (strcmp(final_currency, strtok
+        (NULL, ",")) == 0)) {
+            strtok(NULL, ",");
+            return initial_amount * strtold(strtok(NULL, ","), NULL);
+        }
+    }
+
+    free(row_reader);
+    row_reader = NULL;
+
+}
+
 void get_matches(User* user) {
 
     FILE* file_ptr = fopen("../data/data.csv", "r");

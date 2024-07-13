@@ -30,6 +30,10 @@ void user_destroy(User* this);
 void capitalize_str(char *str);
 void generate_iban(const char *first_name, const char *last_name, char *iban);
 bool unique_iban(const char* iban);
+int get_currency_code(const char* currency);
+void get_currency_from_code(const int currency_code, char* currency);
+long double currency_conversion(const int initial_currency_code, const int final_currency_code, long double
+initial_amount);
 
 void get_matches(User* user);
 

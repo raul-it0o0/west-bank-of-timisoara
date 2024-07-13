@@ -89,8 +89,7 @@ void auth_success(User* session_user) {
                 case 2:
                     valid_input = true;
                     // 'EDIT ACCOUNT INFORMATION'
-                    printf("\nFeature not available yet.\n\n");
-                    pause();
+                    edit_data(session_user);
                     break;
 
                 case 3:
